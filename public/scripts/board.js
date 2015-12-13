@@ -42,7 +42,6 @@ define(['jquery', 'grid'], function($, Grid){
 				for(var j=1; j<=w; j++) {
 					this._boardData[i][j] = new Grid({id: i + '-' + j});
 					$(this._boardDom).append(this._boardData[i][j].render());
-
 				}
 				$(this._boardDom).append("<div class='clear'></div>");
 			}
@@ -60,8 +59,29 @@ define(['jquery', 'grid'], function($, Grid){
 		 */
 		function _catchClickEvt(evt) {
 			var _cords = _parseCords(evt.toElement.id);
+
+			// open up the clicked one
+			this._boardData[_cords.y][_cords.x].setOpen(true);
+			if(this._boardData[_cords.y][_cords.x].isBomb()) {
+				// reveal all bombs
+				revealBombs.call(this);
+				console.log('game over');
+			} else {
+				$(this._boardData[_cords.y][_cords.x].render()).addClass('save-zone');
+			}
+
 			_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);
 		};
+
+		function revealBombs() {
+			this._boardData.forEach(function(row) {
+				row.forEach(function(grid) {
+					if(grid.isBomb()) {
+						grid.reveal();
+					}
+				});
+			});
+		}
 
 		/**
 		 * @param string idStr
@@ -71,7 +91,7 @@ define(['jquery', 'grid'], function($, Grid){
 			if(typeof idStr == 'string') {
 				var _tempCords = idStr.split("-");
 			}
-			return {y: _tempCords[0], x: _tempCords[1]}
+			return {y: parseInt(_tempCords[0]), x: parseInt(_tempCords[1])}
 		}
 
 		/**
@@ -81,45 +101,75 @@ define(['jquery', 'grid'], function($, Grid){
 
 			var _y = grid.getCoordinate().y,
 				_x = grid.getCoordinate().x,
-				_bombsInfo = [];
+				_bombsInfo = [],
+				_targetCords = {};
 
-			var _targetCords = {
-				up         : (typeof _boardData[_y+1][_x] != 'undefined') ? _boardData[_y+1][_x] : '',
-				upRight    : (typeof _boardData[_y+1][_x+1] != 'undefined') ? _boardData[_y+1][_x+1] : '',
-				upLeft     : (typeof _boardData[_y+1][_x-1] != 'undefined') ? _boardData[_y+1][_x-1] : '',
-				left       : (typeof _boardData[_y][_x-1] != 'undefined') ? _boardData[_y][_x-1] : '',
-				self       : (typeof _boardData[_y][_x] != 'undefined') ? _boardData[_y][_x] : '',
-				right      : (typeof _boardData[_y][_x+1] != 'undefined') ? _boardData[_y][_x+1] : '',
-				bottom     : (typeof _boardData[_y-1][_x] != 'undefined') ? _boardData[_y-1][_x] : '',
-				bottomLeft : (typeof _boardData[_y-1][_x-1] != 'undefined') ? _boardData[_y-1][_x-1] : '',
-				bottomRight: (typeof _boardData[_y-1][_x+1] != 'undefined') ? _boardData[_y-1][_x+1] : '',
-			};
+			_targetCords.self = _boardData[_y][_x];
+
+			// left bound check
+			_targetCords.left = (typeof _boardData[_y][_x-1] != 'undefined') ? _boardData[_y][_x-1] : '';
+			
+			// right bound check
+			_targetCords.right = (typeof _boardData[_y][_x+1] != 'undefined') ? _boardData[_y][_x+1] : '';
+
+			// upper bound check
+			if(typeof _boardData[_y+1] != 'undefined') {
+				_targetCords.up = _boardData[_y+1][_x];
+
+				// left bound check.
+				if(typeof _boardData[_y+1][_x-1] != 'undefined') {
+					_targetCords.upLeft = _boardData[_y+1][_x-1];
+				}
+
+				// right bound check.
+				if(typeof _boardData[_y+1][_y+1] != 'undefined') {
+					_targetCords.upRight = _boardData[_y+1][_x+1];
+				}
+			}
+
+			// lower bound check
+			if(typeof _boardData[_y-1] != 'undefined') {
+				_targetCords.bottom = _boardData[_y-1][_x];
+				// check left bound
+				if(typeof _boardData[_y-1][_x-1] != 'undefined') {
+					_targetCords.bottomLeft = _boardData[_y-1][_x-1];
+				}
+				
+				// check right bound
+				if(typeof _boardData[_y-1][_x+1] != 'undefined') {
+					_targetCords.bottomRight = _boardData[_y-1][_x+1];	
+				}
+			}
 
 			// traverse the surrounding of (x, y)
 			// if bomb is detected, don't reveal the surrounding
 			// if no bombs are detected, reavel all surroundings
 			// detected upper
 			for(var _cord in _targetCords) {
-				if(_targetCords.hasOwnProperty(_cord)) {
-					if(typeof _targetCords[_cord] != '' /*&& !_targetCords[_cord].isOpen()*/ && _targetCords[_cord].isBomb()) {
+				if(_targetCords.hasOwnProperty(_cord) && _targetCords[_cord] != '' && typeof _targetCords[_cord] != 'undefined') {
+					if(typeof _targetCords[_cord] != '' && !_targetCords[_cord].isOpen() && _targetCords[_cord].isBomb()) {
 						_bombsInfo.push(_targetCords[_cord]);
-					}
+					} 
 				}
 			}
 
 			// bombs exists
-			// if(_bombsInfo.length > 0) {
-			// 	// calculate the distance between self and the bomb
-			// 	_bombsInfo.forEach(_calculateDistance(ele, index));
-			// } else {
+			if(_bombsInfo.length > 0) {
+				// calculate the distance between self and the bomb
+				$(_targetCords.self.render()).html(_bombsInfo.length);
 
-			// }
+				// _bombsInfo.forEach(_calculateDistance);
+			} else {
 
-			console.log(_bombsInfo);
+					// this._traverseToOpen()
+			}
+
+			// console.log(_bombsInfo);
 		}
 
-		function _calculateDistance() {
-
+		function _calculateDistance(bomb, index) {
+			 var _bombCount = 0;
+			console.log(bomb, index);
 		}
 	}
 

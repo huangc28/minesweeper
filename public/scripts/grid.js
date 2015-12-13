@@ -25,10 +25,20 @@ define(['jquery'], function($) {
 	};
 
 	Grid.prototype.setBomb = function(bomb) {
+		$(this._el).append("<span class='bomb hidden'></span>");
 		this._isBomb = bomb;
 	};
 
+	Grid.prototype.reveal = function() {
+		var bombEle = $(this._el).find('.bomb');
+		console.log(bombEle);
+		if(typeof bombEle != 'undefined' || bombEle != '') {
+			$(bombEle).removeClass('hidden');
+		}
+	};
+
 	Grid.prototype.setOpen = function(isOpen) {
+		// reveal hidden bomb
 		this._isOpen = isOpen;
 	};
 

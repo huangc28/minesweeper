@@ -1,0 +1,16 @@
+{
+  "name": "minesweepers",
+  "description": "Nice little minesweepers.",
+  "main": "",
+  "license": "MIT",
+  "homepage": "https://github.com/huangc28/minesweeper",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/components/",
+    "test",
+    "tests"
+  ]
+}
