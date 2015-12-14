@@ -64,7 +64,7 @@ define(['jquery', 'grid'], function($, Grid){
 			this._boardData[_cords.y][_cords.x].setOpen(true);
 			if(this._boardData[_cords.y][_cords.x].isBomb()) {
 				// reveal all bombs
-				revealBombs.call(this);
+				// revealBombs.call(this);
 				console.log('game over');
 			} else {
 				$(this._boardData[_cords.y][_cords.x].render()).addClass('save-zone');
@@ -98,11 +98,11 @@ define(['jquery', 'grid'], function($, Grid){
 		 * @param Grid grid
 		 */
 		function _traverseToOpen(grid, _boardData) {
-
 			var _y = grid.getCoordinate().y,
 				_x = grid.getCoordinate().x,
 				_bombsInfo = [],
-				_targetCords = {};
+				_targetCords = {},
+				_whiteList = [];
 
 			_targetCords.self = _boardData[_y][_x];
 
@@ -113,6 +113,7 @@ define(['jquery', 'grid'], function($, Grid){
 			_targetCords.right = (typeof _boardData[_y][_x+1] != 'undefined') ? _boardData[_y][_x+1] : '';
 
 			// upper bound check
+			// console.log(typeof _boardData[_y+1]);
 			if(typeof _boardData[_y+1] != 'undefined') {
 				_targetCords.up = _boardData[_y+1][_x];
 
@@ -127,6 +128,7 @@ define(['jquery', 'grid'], function($, Grid){
 				}
 			}
 
+			// console.log(typeof _boardData[_y-1]);
 			// lower bound check
 			if(typeof _boardData[_y-1] != 'undefined') {
 				_targetCords.bottom = _boardData[_y-1][_x];
@@ -149,19 +151,23 @@ define(['jquery', 'grid'], function($, Grid){
 				if(_targetCords.hasOwnProperty(_cord) && _targetCords[_cord] != '' && typeof _targetCords[_cord] != 'undefined') {
 					if(typeof _targetCords[_cord] != '' && !_targetCords[_cord].isOpen() && _targetCords[_cord].isBomb()) {
 						_bombsInfo.push(_targetCords[_cord]);
-					} 
+					}
+					if(typeof _targetCords[_cord] != '' && !_targetCords[_cord].isOpen() && !_targetCords[_cord].isBomb()) {
+						_whiteList.push(_targetCords[_cord]);
+					}
 				}
 			}
 
 			// bombs exists
 			if(_bombsInfo.length > 0) {
-				// calculate the distance between self and the bomb
+				// calculate the distance between self and the bomb.
 				$(_targetCords.self.render()).html(_bombsInfo.length);
-
-				// _bombsInfo.forEach(_calculateDistance);
 			} else {
-
-					// this._traverseToOpen()
+				// traverse 8 directions. plug them into _traverseToOpen function
+				_whiteList.forEach(function(grid) {
+					grid.setOpen(true);
+					_traverseToOpen(grid, _boardData);
+				});
 			}
 
 			// console.log(_bombsInfo);

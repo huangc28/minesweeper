@@ -39,6 +39,9 @@ define(['jquery'], function($) {
 
 	Grid.prototype.setOpen = function(isOpen) {
 		// reveal hidden bomb
+		if(isOpen) {
+			$(this._el).addClass('save-zone');
+		}
 		this._isOpen = isOpen;
 	};
 
