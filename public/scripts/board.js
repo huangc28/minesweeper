@@ -51,7 +51,7 @@ define(['jquery', 'grid'], function($, Grid){
 			// 2. Left click  - flag
 			// 3. Click both
 			// use "mouse-down" event instead of click.
-			$(this._boardDom).on('click', $.proxy(_catchClickEvt, this));
+			$(this._boardDom).on('mousedown', $.proxy(_catchClickEvt, this));
 		};
 
 		/**
@@ -60,22 +60,28 @@ define(['jquery', 'grid'], function($, Grid){
 		 *    	- if none them are bombs, open up
 		 */
 		function _catchClickEvt(evt) {
-			console.log(evt.which);
 
+			// should extract to other object.
+			var mouseBtn = {
+				right: 1,
+				left: 2
+			};
 			var _cords = _parseCords(evt.toElement.id);
+			if(!this._boardData[_cords.y][_cords.x].isOpen() && evt.button == mouseBtn.right) {
+				this._boardData[_cords.y][_cords.x].setFlag(true);
+			} else if(evt.button == mouseBtn.left) {
+				if(!this._boardData[_cords.y][_cords.x].isOpen()) {
+					this._boardData[_cords.y][_cords.x].setOpen(true);
+					if(this._boardData[_cords.y][_cords.x].isBomb()) {
+						// reveal all bombs
+						revealBombs.call(this);
+						console.log('game over');
+					} else {
+						$(this._boardData[_cords.y][_cords.x].render()).addClass('save-zone');
+					}
 
-			// open up the clicked one
-			if(!this._boardData[_cords.y][_cords.x].isOpen()) {
-				this._boardData[_cords.y][_cords.x].setOpen(true);
-				if(this._boardData[_cords.y][_cords.x].isBomb()) {
-					// reveal all bombs
-					revealBombs.call(this);
-					console.log('game over');
-				} else {
-					$(this._boardData[_cords.y][_cords.x].render()).addClass('save-zone');
+					_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);	
 				}
-
-				_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);	
 			}
 		};
 

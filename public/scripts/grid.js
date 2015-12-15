@@ -6,6 +6,7 @@ define(['jquery'], function($) {
 		this.y = null;
 		this._isBomb = false;
 		this._isOpen = false;
+		this._flag = false;
 		this._options = options;
 		_generateDom.call(this);
 
@@ -45,13 +46,22 @@ define(['jquery'], function($) {
 		this._isOpen = isOpen;
 	};
 
+	Grid.prototype.setFlag = function(isFlag) {
+		this._flag = isFlag
+		if(isFlag) {
+			$(this._el).addClass('flag');
+		} else {
+
+		}
+	};
+
 	Grid.prototype.isOpen = function() {
 		return this._isOpen;
 	};
 
 	Grid.prototype.getCoordinate = function() {
 		return {x: this.x, y: this.y}
-	}
+	};
 
 	Grid.prototype.render = function() {
 		return this._el;

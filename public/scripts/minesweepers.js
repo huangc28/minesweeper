@@ -10,9 +10,7 @@ requirejs.config({
 });
 
 requirejs(['grid', 'board'], function(Grid, Board) {
-	console.log('something is awesome');
 	var bDom = document.getElementById('ms-container');
-	// console.log(Board);
 	var board = new Board(bDom, {
 		width: 10,
 		height: 10
