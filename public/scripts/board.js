@@ -47,8 +47,10 @@ define(['jquery', 'grid'], function($, Grid){
 			}
 
 			// Bind click event, determine:
-			// 1. Right click
-			// 2. Left click
+			// 1. Right click - open
+			// 2. Left click  - flag
+			// 3. Click both
+			// use "mouse-down" event instead of click.
 			$(this._boardDom).on('click', $.proxy(_catchClickEvt, this));
 		};
 
@@ -58,19 +60,23 @@ define(['jquery', 'grid'], function($, Grid){
 		 *    	- if none them are bombs, open up
 		 */
 		function _catchClickEvt(evt) {
+			console.log(evt.which);
+
 			var _cords = _parseCords(evt.toElement.id);
 
 			// open up the clicked one
-			this._boardData[_cords.y][_cords.x].setOpen(true);
-			if(this._boardData[_cords.y][_cords.x].isBomb()) {
-				// reveal all bombs
-				// revealBombs.call(this);
-				console.log('game over');
-			} else {
-				$(this._boardData[_cords.y][_cords.x].render()).addClass('save-zone');
-			}
+			if(!this._boardData[_cords.y][_cords.x].isOpen()) {
+				this._boardData[_cords.y][_cords.x].setOpen(true);
+				if(this._boardData[_cords.y][_cords.x].isBomb()) {
+					// reveal all bombs
+					revealBombs.call(this);
+					console.log('game over');
+				} else {
+					$(this._boardData[_cords.y][_cords.x].render()).addClass('save-zone');
+				}
 
-			_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);
+				_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);	
+			}
 		};
 
 		function revealBombs() {
@@ -169,8 +175,6 @@ define(['jquery', 'grid'], function($, Grid){
 					_traverseToOpen(grid, _boardData);
 				});
 			}
-
-			// console.log(_bombsInfo);
 		}
 
 		function _calculateDistance(bomb, index) {
@@ -178,7 +182,6 @@ define(['jquery', 'grid'], function($, Grid){
 			console.log(bomb, index);
 		}
 	}
-
 
 	Board.prototype.render = function() {
 		return this._boardDom;
