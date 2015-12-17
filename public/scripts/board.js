@@ -1,4 +1,5 @@
 define(['jquery', 'grid'], function($, Grid){
+	"use strict";
 	function Board(initDom, options) {
 	 	this._w = options.width,
 		this._h = options.height;
@@ -8,10 +9,10 @@ define(['jquery', 'grid'], function($, Grid){
 		this._boardData = [], // contains the grid's dom and its related mines. 
 		this._bombs = 10;
 
-		// console.log(_testFunction);
 		_generateBoardDom.call(this);
 		_populate.call(this);
 		_plantMines.call(this);
+		$(this._boardDom).on('gameover', _gameOver());
 
 		function _generateBoardDom() {
 			var el = document.createElement("div");
@@ -56,20 +57,26 @@ define(['jquery', 'grid'], function($, Grid){
 
 		/**
 		 * 1. Traverse the 8 direction of the specific location.
-		 *    	- if 1 of the 8 grids is a bomb, stop traversing, open itself
-		 *    	- if none them are bombs, open up
+		 *    	- if 1 of the 8 grids is a bomb, stop traversing, open itself.
+		 *    	- if none them are bombs, open up.
+		 * 2. Win condition:
+		 * 		- traverse all bombs location is all set to "flag"
+		 *      - traverse all non-bomb location, is all "opened"
 		 */
 		function _catchClickEvt(evt) {
-
 			// should extract to other object.
 			var mouseBtn = {
-				right: 1,
-				left: 2
-			};
-			var _cords = _parseCords(evt.toElement.id);
+				right: 2,
+				left: 0
+			},
+		 	_cords = _parseCords(evt.toElement.id);
+
+
 			if(!this._boardData[_cords.y][_cords.x].isOpen() && evt.button == mouseBtn.right) {
-				this._boardData[_cords.y][_cords.x].setFlag(true);
-			} else if(evt.button == mouseBtn.left) {
+				$(this._boardData[_cords.y][_cords.x].render()).toggleClass('flag');
+			}
+			else if(evt.button == mouseBtn.left) {
+				// console.log('left click');
 				if(!this._boardData[_cords.y][_cords.x].isOpen()) {
 					this._boardData[_cords.y][_cords.x].setOpen(true);
 					if(this._boardData[_cords.y][_cords.x].isBomb()) {
@@ -79,10 +86,14 @@ define(['jquery', 'grid'], function($, Grid){
 					} else {
 						$(this._boardData[_cords.y][_cords.x].render()).addClass('save-zone');
 					}
-
-					_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);	
+					_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);
 				}
 			}
+
+			// var win = _checkWinStatus();
+			// if(win) {
+			// 	$("").trigger('win');
+			// }
 		};
 
 		function revealBombs() {
@@ -177,15 +188,13 @@ define(['jquery', 'grid'], function($, Grid){
 			} else {
 				// traverse 8 directions. plug them into _traverseToOpen function
 				_whiteList.forEach(function(grid) {
-					grid.setOpen(true);
-					_traverseToOpen(grid, _boardData);
+					if(!grid.isFlag())
+					{
+						grid.setOpen(true);
+						_traverseToOpen(grid, _boardData);
+					}
 				});
 			}
-		}
-
-		function _calculateDistance(bomb, index) {
-			 var _bombCount = 0;
-			console.log(bomb, index);
 		}
 	}
 

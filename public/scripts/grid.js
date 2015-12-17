@@ -47,12 +47,16 @@ define(['jquery'], function($) {
 	};
 
 	Grid.prototype.setFlag = function(isFlag) {
-		this._flag = isFlag
+		this._flag = isFlag;
 		if(isFlag) {
 			$(this._el).addClass('flag');
 		} else {
-
+			$(this._el).removeClass('flag');
 		}
+	};
+
+	Grid.prototype.isFlag = function() {
+		return this._flag;
 	};
 
 	Grid.prototype.isOpen = function() {
