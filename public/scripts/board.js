@@ -7,12 +7,15 @@ define(['jquery', 'grid'], function($, Grid){
 		this._boardDom = null,
 		this._baseGrid  = null,
 		this._boardData = [], // contains the grid's dom and its related mines. 
-		this._bombs = 10;
+		this._bombs = 10,
+		this._bombCords = {},
+		this._flagNum = 0;
 
 		_generateBoardDom.call(this);
 		_populate.call(this);
 		_plantMines.call(this);
-		$(this._boardDom).on('gameover', _gameOver());
+		// console.log(this._bombCords);
+		// $(this._boardDom).on('gameover', _gameOver());
 
 		function _generateBoardDom() {
 			var el = document.createElement("div");
@@ -26,6 +29,7 @@ define(['jquery', 'grid'], function($, Grid){
 				var ycord = Math.floor((Math.random() * 10) + 1);
 				if(!this._boardData[ycord][xcord].isBomb()) {
 					this._boardData[ycord][xcord].setBomb(true);
+					this._bombCords[String(ycord) + '-' + String(xcord)] = false;
 				} else {
 					i--;
 				}
@@ -64,43 +68,48 @@ define(['jquery', 'grid'], function($, Grid){
 		 *      - traverse all non-bomb location, is all "opened"
 		 */
 		function _catchClickEvt(evt) {
+
 			// should extract to other object.
 			var mouseBtn = {
 				right: 2,
 				left: 0
 			},
 		 	_cords = _parseCords(evt.toElement.id);
-
-
 			if(!this._boardData[_cords.y][_cords.x].isOpen() && evt.button == mouseBtn.right) {
-				$(this._boardData[_cords.y][_cords.x].render()).toggleClass('flag');
-			}
-			else if(evt.button == mouseBtn.left) {
-				// console.log('left click');
-				if(!this._boardData[_cords.y][_cords.x].isOpen()) {
-					this._boardData[_cords.y][_cords.x].setOpen(true);
-					if(this._boardData[_cords.y][_cords.x].isBomb()) {
-						// reveal all bombs
-						revealBombs.call(this);
-						console.log('game over');
-					} else {
-						$(this._boardData[_cords.y][_cords.x].render()).addClass('save-zone');
-					}
-					_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);
+				if(typeof this._bombCords[evt.toElement.id] != 'undefined') {
+					this._bombCords[evt.toElement.id] = true;
+				}
+
+				if($(this._boardData[_cords.y][_cords.x].render()).hasClass('flag')) {
+					$(this._boardData[_cords.y][_cords.x].render()).removeClass('flag');
+					this._flagNum--;
+				} else {
+					$(this._boardData[_cords.y][_cords.x].render()).addClass('flag');
+					this._flagNum++;
 				}
 			}
-
-			// var win = _checkWinStatus();
-			// if(win) {
-			// 	$("").trigger('win');
-			// }
+			else if(evt.button == mouseBtn.left) {
+				if(!this._boardData[_cords.y][_cords.x].isOpen()) {
+					if(this._boardData[_cords.y][_cords.x].isBomb()) {
+						// reveal all bombs
+						_revealBombs.call(this);
+						console.log('game over');
+					} else {
+						this._boardData[_cords.y][_cords.x].setOpen(true);
+						_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);
+					}
+				}
+			}
+			_detectWinning.call(this);
 		};
 
-		function revealBombs() {
+		function _revealBombs() {
 			this._boardData.forEach(function(row) {
 				row.forEach(function(grid) {
 					if(grid.isBomb()) {
-						grid.reveal();
+						grid.revealBomb();
+					} else {
+						grid.setOpen(true);
 					}
 				});
 			});
@@ -194,6 +203,20 @@ define(['jquery', 'grid'], function($, Grid){
 						_traverseToOpen(grid, _boardData);
 					}
 				});
+			}
+		}
+
+		function _detectWinning() {
+			var win = true;
+			for(var flagBombSet in this._bombCords) {
+				if(this._bombCords.hasOwnProperty(flagBombSet)) {
+					if(!flagBombSet) {
+						win = false;
+					}
+				}
+			}
+			if(win && this._bombCords.length == this._flagNum) {
+				console.log('win!');
 			}
 		}
 	}
