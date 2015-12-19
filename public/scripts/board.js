@@ -7,15 +7,18 @@ define(['jquery', 'grid'], function($, Grid){
 		this._boardDom = null,
 		this._baseGrid  = null,
 		this._boardData = [], // contains the grid's dom and its related mines. 
-		this._bombs = 10,
+		this._bombs = 1,
 		this._bombCords = {},
 		this._flagNum = 0;
 
 		_generateBoardDom.call(this);
 		_populate.call(this);
 		_plantMines.call(this);
-		// console.log(this._bombCords);
-		// $(this._boardDom).on('gameover', _gameOver());
+
+		$(this._boardDom).bind('win', $.proxy(_win, this));
+		function _win() {
+			alert('you won the game');
+		};
 
 		function _generateBoardDom() {
 			var el = document.createElement("div");
@@ -93,7 +96,9 @@ define(['jquery', 'grid'], function($, Grid){
 					if(this._boardData[_cords.y][_cords.x].isBomb()) {
 						// reveal all bombs
 						_revealBombs.call(this);
-						console.log('game over');
+
+						// trigger game over event
+						alert('game over');
 					} else {
 						this._boardData[_cords.y][_cords.x].setOpen(true);
 						_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);
@@ -207,16 +212,18 @@ define(['jquery', 'grid'], function($, Grid){
 		}
 
 		function _detectWinning() {
-			var win = true;
+			var bombNum = 0, win = true;
 			for(var flagBombSet in this._bombCords) {
 				if(this._bombCords.hasOwnProperty(flagBombSet)) {
 					if(!flagBombSet) {
 						win = false;
 					}
+					bombNum++;
 				}
 			}
-			if(win && this._bombCords.length == this._flagNum) {
-				console.log('win!');
+			if(win && bombNum == this._flagNum) {
+				// trigger win event
+				$(this._boardDom).trigger('win');
 			}
 		}
 	}
