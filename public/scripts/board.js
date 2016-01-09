@@ -1,15 +1,26 @@
 define(['jquery', 'grid'], function($, Grid){
-	function Board(initDom, options) {
+	/**
+	 * TODO: 
+	 * 	1. Change private member to:
+	 *		var = _generateBoardDom = function() { ... };
+	 *  2. Trigger start timer.
+	 *
+	 */
+	function Board(initDom, options, timer) {
 	 	this._w = options.width,
 		this._h = options.height;
+		this.gameStarted = false;
 		this._initDom = initDom,
 		this._boardDom = null,
 		this._baseGrid  = null,
 		this._boardData = [], // contains the grid's dom and its related mines. 
-		this._bombs = 10;
+		this._bombs = 1;
+		this._bombPositions = {};
+		this._flagCount = 0;
+		this._timer = timer;
 
-		// console.log(_testFunction);
 		_generateBoardDom.call(this);
+		_appendTimer.call(this);
 		_populate.call(this);
 		_plantMines.call(this);
 
@@ -17,14 +28,64 @@ define(['jquery', 'grid'], function($, Grid){
 			var el = document.createElement("div");
 			el.className = 'board';
 			this._boardDom = el;
+			$(this._boardDom).on('gameover', $.proxy(_gameover, this));
 		};
 
+		/**
+		 * Append timer DOM.
+		 */
+		function _appendTimer() {
+			this._initDom.appendChild(this._timer.render());
+		}
+
+		/**
+		 * Check if it meets the winning condition.
+		 *
+		 *	1. Number of flags equals to the number of mines
+		 *  2. bombs position are all marked by flags.
+		 */
+		function _isGameover() {
+			var _bombsAllMarked = true;
+			
+			// if one of the position is not marked, set the flag to false;
+			for(var position in this._bombPositions) {
+				if(!position) {
+					_bombsAllMarked = false;
+					break;
+				}
+			}
+			
+			return (this._flagCount === this._bombs && _bombsAllMarked) || false;
+		}
+
+		function _gameover(evt, status) {
+			var _board = evt.target
+			if(status === 'win') {
+				// stop the timer
+
+			} else {
+				// stop the timer
+			}
+			// console.log('trigger game over event');
+		};
+
+		/**
+		 * Randomly generate bombs. Record all the position into a hash.
+		 * 	1. Assign bomb.
+		 *  2. Record position of the bomb into a hash. Example:
+		 *  	{
+		 *			'2-3': false ---> position is not being marked by flag.
+		 *			'4-4': true  ---> position is being marked by flag.
+		 *		}
+		 *
+		 */
 		function _plantMines() {
 			for(var i=0; i<this._bombs; i++) {
 				var xcord = Math.floor((Math.random() * 10) + 1);
 				var ycord = Math.floor((Math.random() * 10) + 1);
 				if(!this._boardData[ycord][xcord].isBomb()) {
 					this._boardData[ycord][xcord].setBomb(true);
+					this._bombPositions[String(xcord + '-' +ycord)] = false;
 				} else {
 					i--;
 				}
@@ -35,7 +96,6 @@ define(['jquery', 'grid'], function($, Grid){
 			var container = $(this._initDom),
 			w = this._w,
 			h = this._h;
-			container.empty();
 			// populate horizontally.
 			for(var i=1; i<=h; i++) {
 				this._boardData[i] = [];
@@ -57,34 +117,70 @@ define(['jquery', 'grid'], function($, Grid){
 		/**
 		 * 1. Traverse the 8 direction of the specific location.
 		 *    	- if 1 of the 8 grids is a bomb, stop traversing, open itself
-		 *    	- if none them are bombs, open up
+		 *    	- if none them are bombs, keep on traversing to open.
+		 * 2. If the game first started 
 		 */
 		function _catchClickEvt(evt) {
 
+			this._timer.trigger('timer:start');
+
+			// if(!this.gameStarted) {
+			// 	start timer
+
+			// }
+
 			// should extract to other object.
 			var mouseBtn = {
-				right: 1,
-				left: 2
+				right: 2,
+				left: 0
 			};
 			var _cords = _parseCords(evt.toElement.id);
+			var _self = this;
+
+			// Right click.
 			if(!this._boardData[_cords.y][_cords.x].isOpen() && evt.button == mouseBtn.right) {
-				this._boardData[_cords.y][_cords.x].setFlag(true);
+				(this._boardData[_cords.y][_cords.x].toggleFlag()) ? this._flagCount++ : this._flagCount--;
+				// mark bomb position
+				if(this._bombPositions.hasOwnProperty(evt.toElement.id)) {
+					this._bombPositions[evt.toElement.id] = true;
+				}				
+			// Left click.
 			} else if(evt.button == mouseBtn.left) {
 				if(!this._boardData[_cords.y][_cords.x].isOpen()) {
 					this._boardData[_cords.y][_cords.x].setOpen(true);
+					// if click on bomb, then we end the game, reveal all bombs.
 					if(this._boardData[_cords.y][_cords.x].isBomb()) {
 						// reveal all bombs
 						revealBombs.call(this);
-						console.log('game over');
+						$(this._boardDom).trigger('gameover', ['lose']);
 					} else {
+						// add class 
 						$(this._boardData[_cords.y][_cords.x].render()).addClass('save-zone');
-					}
-
-					_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);	
+						_traverseToOpen(this._boardData[_cords.y][_cords.x], this._boardData);	
+					}					
 				}
+			}
+
+
+			if(_isGameover) {
+				$(this._boardDom).trigger('gameover', ['win']);
 			}
 		};
 
+		/**
+		 * Detect if the game qualifies winning condition
+		 *
+		 * 	1. Number of bombs equals to number of flags.
+		 *  2. If bomb position has all been marked.
+		 *
+		 */
+		function _win() {
+			console.log(this);
+		};
+
+		/**
+		 * Reveal all bombs of the board.
+		 */
 		function revealBombs() {
 			this._boardData.forEach(function(row) {
 				row.forEach(function(grid) {
@@ -125,7 +221,6 @@ define(['jquery', 'grid'], function($, Grid){
 			_targetCords.right = (typeof _boardData[_y][_x+1] != 'undefined') ? _boardData[_y][_x+1] : '';
 
 			// upper bound check
-			// console.log(typeof _boardData[_y+1]);
 			if(typeof _boardData[_y+1] != 'undefined') {
 				_targetCords.up = _boardData[_y+1][_x];
 
@@ -181,11 +276,6 @@ define(['jquery', 'grid'], function($, Grid){
 					_traverseToOpen(grid, _boardData);
 				});
 			}
-		}
-
-		function _calculateDistance(bomb, index) {
-			 var _bombCount = 0;
-			console.log(bomb, index);
 		}
 	}
 

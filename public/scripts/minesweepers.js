@@ -9,11 +9,14 @@ requirejs.config({
 	}
 });
 
-requirejs(['grid', 'board'], function(Grid, Board) {
+requirejs(['grid', 'board', 'timer'], function(Grid, Board, Timer) {
 	var bDom = document.getElementById('ms-container');
 	var board = new Board(bDom, {
 		width: 10,
 		height: 10
-	});
-	$("#ms-container").append(board.render());
+	}, (new Timer()).draw());
+
+	// $('#ms-container').append(timer.render());
+	$('#ms-container').append(board.render());
+	
 });
