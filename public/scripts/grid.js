@@ -26,31 +26,35 @@ define(['jquery'], function($) {
 	};
 
 	Grid.prototype.setBomb = function(bomb) {
+		$(this._el).append("<span class='bomb hidden'></span>");
 		this._isBomb = bomb;
 	};
 
-	Grid.prototype.revealBomb = function() {
-		$(this._el).empty().addClass('bomb');		
+	Grid.prototype.reveal = function() {
+		var bombEle = $(this._el).find('.bomb');
+		console.log(bombEle);
+		if(typeof bombEle != 'undefined' || bombEle != '') {
+			$(bombEle).removeClass('hidden');
+		}
 	};
 
 	Grid.prototype.setOpen = function(isOpen) {
+		// reveal hidden bomb
 		if(isOpen) {
 			$(this._el).addClass('save-zone');
 		}
 		this._isOpen = isOpen;
 	};
 
-	Grid.prototype.setFlag = function(isFlag) {
-		this._flag = isFlag;
-		if(isFlag) {
-			$(this._el).addClass('flag');
-		} else {
+	Grid.prototype.toggleFlag = function() {
+		if(this._flag) {
 			$(this._el).removeClass('flag');
-		}
-	};
+			return this._flag = false;
 
-	Grid.prototype.isFlag = function() {
-		return this._flag;
+		} else {
+			$(this._el).addClass('flag');
+			return this._flag = true;
+		}
 	};
 
 	Grid.prototype.isOpen = function() {
