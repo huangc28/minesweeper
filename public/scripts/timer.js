@@ -30,14 +30,14 @@ define(['jquery'], function($) {
 	};
 
 	var _stopTimer = function(evt, timer) {
-		clearTimeout(timer.timerInterval);
+		clearTimeout(timer._timerInterval);
 	}
 
 	var _startTimer = function(evt, timer) {
 		console.log('timer start');
 		timer.counter = 0;
-		timer.timerInterval = null;
-		timer.timerInterval = setInterval(function() {
+		timer._timerInterval = null;
+		timer._timerInterval = setInterval(function() {
 			var _count = timer.counter++;
 			_updateTimer.call(timer, _count);
 		}, 1000)

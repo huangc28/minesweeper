@@ -60,17 +60,19 @@ define(['jquery', 'grid'], function($, Grid){
 		}
 
 		function _gameover(evt, status) {
-			console.log(status);
 			var _board = evt.target
 			if(status === 'win') {
 				// stop the timer
 				this._timer.trigger('timer:stop');
+				// this.gameStarting = false;
 				this._timer.unbindAll();
 				alert('you have won the game');
 			} 
 			if(status === 'lose') {
 				// stop the timer
 				this._timer.trigger('timer:stop');
+				// this.gameStarting = false;
+				this._timer.unbindAll();
 			}
 		};
 
@@ -127,10 +129,10 @@ define(['jquery', 'grid'], function($, Grid){
 		 */
 		function _catchClickEvt(evt) {
 
-			if(!this.gameStarting) {
-				this.gameStarting = true;
+			// if(!this.gameStarting) {
+			// 	this.gameStarting = true;
 				this._timer.trigger('timer:start');
-			}
+			// }
 
 			// should extract to other object.
 			var mouseBtn = {
