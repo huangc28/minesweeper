@@ -9,7 +9,7 @@ define(['jquery', 'grid'], function($, Grid){
 	function Board(initDom, options, timer) {
 	 	this._w = options.width,
 		this._h = options.height;
-		this.gameStarted = false;
+		this.gameStarting = false;
 		this._initDom = initDom,
 		this._boardDom = null,
 		this._baseGrid  = null,
@@ -54,19 +54,24 @@ define(['jquery', 'grid'], function($, Grid){
 					break;
 				}
 			}
-			
+			console.log('flag count:', this._flagCount);
+			console.log('bombs count:', this._bombs);
 			return (this._flagCount === this._bombs && _bombsAllMarked) || false;
 		}
 
 		function _gameover(evt, status) {
+			console.log(status);
 			var _board = evt.target
 			if(status === 'win') {
 				// stop the timer
-
-			} else {
+				this._timer.trigger('timer:stop');
+				this._timer.unbindAll();
+				alert('you have won the game');
+			} 
+			if(status === 'lose') {
 				// stop the timer
+				this._timer.trigger('timer:stop');
 			}
-			// console.log('trigger game over event');
 		};
 
 		/**
@@ -122,12 +127,10 @@ define(['jquery', 'grid'], function($, Grid){
 		 */
 		function _catchClickEvt(evt) {
 
-			this._timer.trigger('timer:start');
-
-			// if(!this.gameStarted) {
-			// 	start timer
-
-			// }
+			if(!this.gameStarting) {
+				this.gameStarting = true;
+				this._timer.trigger('timer:start');
+			}
 
 			// should extract to other object.
 			var mouseBtn = {
@@ -161,8 +164,7 @@ define(['jquery', 'grid'], function($, Grid){
 				}
 			}
 
-
-			if(_isGameover) {
+			if(_isGameover.call(this)) {
 				$(this._boardDom).trigger('gameover', ['win']);
 			}
 		};
