@@ -14,7 +14,7 @@ let _w,
 	  boardData = [], // contains the grid's dom and its related mines.
 	  bombs = 10,
 	  bombPositions = {},
-	  _flagCount = 0
+	  flagCount = 0
 
 /**
  * TODO:
@@ -43,7 +43,9 @@ const Board = (initDom, options, timer) => {
     gameStarting,
     boardData,
     boardDOM,
+    bombs,
     bombPositions,
+    flagCount,
     timer,
   }))
 

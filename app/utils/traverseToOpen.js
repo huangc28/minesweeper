@@ -1,10 +1,11 @@
 import $ from 'jquery'
+import isGameOver from './isGameover.js'
 
 /**
  * @param {object} grid
  * @param {object} boardData
  */
-const traverseToOpen = (grid, boardData) => {
+const traverseToOpen = (grid, boardData, boardDOM, bombPositions, bombs, flagCount) => {
   const { y, x } = grid.getCoordinate()
 	const bombsInfo = []
   const targetCords = {}
@@ -70,9 +71,14 @@ const traverseToOpen = (grid, boardData) => {
 		// traverse 8 directions. plug them into _traverseToOpen function
 		whiteList.forEach(grid => {
 			grid.setOpen(true)
-			traverseToOpen(grid, boardData)
+			traverseToOpen(grid, boardData, bombs)
 		})
 	}
+
+  // console.log(isGameOver(flagCount, bombs, bombPositions))
+  if (isGameOver(flagCount, bombs, bombPositions)) {
+    $(boardDOM).trigger('gameover', ['win']);
+  }
 }
 
 export default traverseToOpen

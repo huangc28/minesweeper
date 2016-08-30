@@ -14,7 +14,9 @@ const catchClickEvt = ({
   gameStarting,
   boardData,
   boardDOM,
+  bombs,
   bombPositions,
+  flagCount,
   timer,
 }) => {
 
@@ -32,7 +34,7 @@ const catchClickEvt = ({
   const cords = parseCords(evt.toElement.id)
   // Right click.
   if(!boardData[cords.y][cords.x].isOpen() && evt.button === mouseBtn.right) {
-  	(boardData[cords.y][cords.x].toggleFlag()) ? this._flagCount++ : this._flagCount--
+  	(boardData[cords.y][cords.x].toggleFlag()) ? flagCount++ : flagCount--
     // mark bomb position
     if(bombPositions.hasOwnProperty(evt.toElement.id)) {
     	bombPositions[evt.toElement.id] = true;
@@ -48,7 +50,7 @@ const catchClickEvt = ({
   		} else {
   			// add class
   			$(boardData[cords.y][cords.x].render()).addClass('save-zone')
-  			traverseToOpen(boardData[cords.y][cords.x], boardData)
+  			traverseToOpen(boardData[cords.y][cords.x], boardData, boardDOM, bombPositions, bombs, flagCount)
   		}
   	}
   }
