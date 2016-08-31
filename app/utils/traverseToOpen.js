@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import isGameOver from './isGameover.js'
+import win from './win.js'
 
 /**
  * @param {object} grid
@@ -75,8 +75,7 @@ const traverseToOpen = (grid, boardData, boardDOM, bombPositions, bombs, flagCou
 		})
 	}
 
-  // console.log(isGameOver(flagCount, bombs, bombPositions))
-  if (isGameOver(flagCount, bombs, bombPositions)) {
+  if (win(flagCount, bombs, bombPositions)) {
     $(boardDOM).trigger('gameover', ['win']);
   }
 }

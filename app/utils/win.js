@@ -4,7 +4,7 @@
  *	1. Number of flags equals to the number of mines
  *  2. bombs position are all marked by flags.
  */
-const isGameover = (flagCount, bombs, bombPositions) => {
+const win = (flagCount, bombs, bombPositions) => {
 	const bombsAllMarked = true
 
 	// if one of the position is not marked, set the flag to false;
@@ -19,4 +19,4 @@ const isGameover = (flagCount, bombs, bombPositions) => {
 	return (flagCount === bombs && bombsAllMarked) || false
 }
 
-export default isGameover
+export default win

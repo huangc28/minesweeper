@@ -5,15 +5,11 @@ import populate from './utils/populate.js'
 import plantMines from './utils/plantMines.js'
 import openGridEvent from './utils/openGridEvent.js'
 
-let _w,
-    _h,
-    gameStarting = false,
-    initDom,
+let gameStarting = false,
     boardDOM = null,
-    _baseGrid  = null,
 	  boardData = [], // contains the grid's dom and its related mines.
 	  bombs = 10,
-	  bombPositions = {},
+    bombPositions = {},
 	  flagCount = 0
 
 /**
@@ -34,7 +30,7 @@ const Board = (initDom, options, timer) => {
   // 2. Left click  - flag
   // 3. Click both
   // use "mouse-down" event instead of click.
-  bombPositions = plantMines(bombs, boardData, bombPositions)
+  bombPositions = plantMines(bombs, boardData)
 
   // bind boardDOM to gameover event
   $(boardDOM).on('gameover', evt => gameover)

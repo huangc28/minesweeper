@@ -7,9 +7,9 @@ const gameover = (evt, status, timer) => {
       alert('you have won the game')
       break;
     default:
-      this._timer.trigger('timer:stop')
+      timer.trigger('timer:stop')
       // this.gameStarting = false;
-      this._timer.unbindAll()
+      timer.unbindAll()
   }
 }
 
