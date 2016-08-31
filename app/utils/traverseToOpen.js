@@ -1,11 +1,27 @@
 import $ from 'jquery'
-import win from './win.js'
+import flag from '../flag.js'
+import bombPositions from './bombPositions.js'
+
+/**
+ * Check if it meets the winning condition.
+ *
+ *	1. Number of flags equals to the number of mines
+ *  2. bombs position are all marked by flags.
+ */
+const win = bombs => {
+  const bombMap = bombPositions.load()
+	const allBombAreSetFlag = Object.keys(bombMap).every(
+		position => bombMap[position]
+	)
+	return (flag.getFlagCount() === bombs && allBombAreSetFlag) || false
+}
 
 /**
  * @param {object} grid
  * @param {object} boardData
  */
-const traverseToOpen = (grid, boardData, boardDOM, bombPositions, bombs) => {
+const traverseToOpen = (grid, boardData, boardDOM, bombs) => {
+  console.log('traverse to open', bombPositions.load())
   const { y, x } = grid.getCoordinate()
 	const bombsInfo = []
   const targetCords = {}
@@ -75,7 +91,7 @@ const traverseToOpen = (grid, boardData, boardDOM, bombPositions, bombs) => {
 		})
 	}
 
-  if (win(bombs, bombPositions)) {
+  if (win(bombs)) {
     $(boardDOM).trigger('gameover', ['win']);
   }
 }

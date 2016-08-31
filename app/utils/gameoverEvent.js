@@ -1,4 +1,4 @@
-const gameover = (evt, status, timer) => {
+const gameoverEvent = (evt, status, timer) => {
   switch (state) {
     case 'win':
       timer.trigger('timer:stop')
@@ -13,4 +13,4 @@ const gameover = (evt, status, timer) => {
   }
 }
 
-export default gameover
+export default gameoverEvent

@@ -3,6 +3,13 @@ import flag from '../flag.js'
 import parseCords from './parseCords.js'
 import revealBombs from './revealBombs.js'
 import traverseToOpen from './traverseToOpen.js'
+import bombPositions from './bombPositions.js'
+
+// should extract to other object.
+const click = {
+  right: 2,
+  left: 0
+}
 
 /**
  * 1. Traverse the 8 direction of the specific location.
@@ -16,41 +23,36 @@ const catchClickEvt = ({
   boardData,
   boardDOM,
   bombs,
-  bombPositions,
   timer,
 }) => {
+  const bombMap = bombPositions.load()
+
 
   if(!gameStarting) {
     gameStarting = true
     timer.trigger('timer:start')
   }
 
-  // should extract to other object.
-  const mouseBtn = {
-    right: 2,
-    left: 0
-  }
-
   const cords = parseCords(evt.toElement.id)
   // Right click.
-  if(!boardData[cords.y][cords.x].isOpen() && evt.button === mouseBtn.right) {
+  if (!boardData[cords.y][cords.x].isOpen() && evt.button === click.right) {
   	(boardData[cords.y][cords.x].toggleFlag()) ? flag.increase() : flag.reduct()
     // mark bomb position
-    if(bombPositions.hasOwnProperty(evt.toElement.id)) {
-    	bombPositions[evt.toElement.id] = true;
+    if (bombMap.hasOwnProperty(evt.toElement.id)) {
+    	bombMap[evt.toElement.id] = true;
     }
-  } else if(evt.button === mouseBtn.left) { // Left click.
+  } else if (evt.button === click.left) { // Left click.
   	if(!boardData[cords.y][cords.x].isOpen()) {
   		boardData[cords.y][cords.x].setOpen(true);
   		// if click on bomb, then we end the game, reveal all bombs.
   		if(boardData[cords.y][cords.x].isBomb()) {
         // reveal all bombs
         revealBombs(boardData)
-  			$(boardDom).trigger('gameover', ['lose', timer]);
+  			$(boardDOM).trigger('gameover', ['lose', timer]);
   		} else {
   			// add class
   			$(boardData[cords.y][cords.x].render()).addClass('save-zone')
-  			traverseToOpen(boardData[cords.y][cords.x], boardData, boardDOM, bombPositions, bombs)
+  			traverseToOpen(boardData[cords.y][cords.x], boardData, boardDOM, bombs)
   		}
   	}
   }

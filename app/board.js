@@ -3,12 +3,13 @@ import generateBoardDOM from './utils/generateBoardDOM.js'
 import populate from './utils/populate.js'
 import plantMines from './utils/plantMines.js'
 import openGridEvent from './utils/openGridEvent.js'
+import gameoverEvent from './utils/gameOverEvent.js'
+import bombPositions from './utils/bombPositions.js'
 
 let gameStarting = false,
     boardDOM = null,
 	  boardData = [], // contains the grid's dom and its related mines.
-	  bombs = 10,
-    bombPositions = {}
+	  bombs = 10
 
 /**
  * TODO:
@@ -28,30 +29,19 @@ const Board = (initDom, options, timer) => {
   // 2. Left click  - flag
   // 3. Click both
   // use "mouse-down" event instead of click.
-  bombPositions = plantMines(bombs, boardData)
+  const positionMap = plantMines(bombs, boardData)
+  bombPositions.save(positionMap)
 
   // bind boardDOM to gameover event
-  $(boardDOM).on('gameover', evt => gameover)
+  $(boardDOM).on('gameover', evt => gameoverEvent)
   $(boardDOM).on('mousedown',  evt => openGridEvent({
     evt,
     gameStarting,
     boardData,
     boardDOM,
     bombs,
-    bombPositions,
     timer,
   }))
-
-	/**
-	 * Detect if the game qualifies winning condition
-	 *
-	 * 	1. Number of bombs equals to number of flags.
-	 *  2. If bomb position has all been marked.
-	 *
-	 */
-	// function _win() {
-	// 	console.log(this);
-	// };
 
   return {
     render: () => boardDOM
