@@ -8,7 +8,7 @@ let gameStarting = false,
     boardDOM = null,
 	  boardData = [], // contains the grid's dom and its related mines.
 	  bombs = 10,
-    bombPositions = {},
+    bombPositions = {}
 
 /**
  * TODO:
