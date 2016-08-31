@@ -5,7 +5,7 @@ import win from './win.js'
  * @param {object} grid
  * @param {object} boardData
  */
-const traverseToOpen = (grid, boardData, boardDOM, bombPositions, bombs, flagCount) => {
+const traverseToOpen = (grid, boardData, boardDOM, bombPositions, bombs) => {
   const { y, x } = grid.getCoordinate()
 	const bombsInfo = []
   const targetCords = {}
@@ -75,7 +75,7 @@ const traverseToOpen = (grid, boardData, boardDOM, bombPositions, bombs, flagCou
 		})
 	}
 
-  if (win(flagCount, bombs, bombPositions)) {
+  if (win(bombs, bombPositions)) {
     $(boardDOM).trigger('gameover', ['win']);
   }
 }

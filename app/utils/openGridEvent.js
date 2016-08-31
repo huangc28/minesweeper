@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import flag from '../flag.js'
 import parseCords from './parseCords.js'
 import revealBombs from './revealBombs.js'
 import traverseToOpen from './traverseToOpen.js'
@@ -16,7 +17,6 @@ const catchClickEvt = ({
   boardDOM,
   bombs,
   bombPositions,
-  flagCount,
   timer,
 }) => {
 
@@ -34,7 +34,7 @@ const catchClickEvt = ({
   const cords = parseCords(evt.toElement.id)
   // Right click.
   if(!boardData[cords.y][cords.x].isOpen() && evt.button === mouseBtn.right) {
-  	(boardData[cords.y][cords.x].toggleFlag()) ? flagCount++ : flagCount--
+  	(boardData[cords.y][cords.x].toggleFlag()) ? flag.increase() : flag.reduct()
     // mark bomb position
     if(bombPositions.hasOwnProperty(evt.toElement.id)) {
     	bombPositions[evt.toElement.id] = true;
@@ -50,7 +50,7 @@ const catchClickEvt = ({
   		} else {
   			// add class
   			$(boardData[cords.y][cords.x].render()).addClass('save-zone')
-  			traverseToOpen(boardData[cords.y][cords.x], boardData, boardDOM, bombPositions, bombs, flagCount)
+  			traverseToOpen(boardData[cords.y][cords.x], boardData, boardDOM, bombPositions, bombs)
   		}
   	}
   }

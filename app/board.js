@@ -1,5 +1,4 @@
 import $ from 'jquery'
-import Grid from './Grid.js'
 import generateBoardDOM from './utils/generateBoardDOM.js'
 import populate from './utils/populate.js'
 import plantMines from './utils/plantMines.js'
@@ -10,7 +9,6 @@ let gameStarting = false,
 	  boardData = [], // contains the grid's dom and its related mines.
 	  bombs = 10,
     bombPositions = {},
-	  flagCount = 0
 
 /**
  * TODO:
@@ -41,7 +39,6 @@ const Board = (initDom, options, timer) => {
     boardDOM,
     bombs,
     bombPositions,
-    flagCount,
     timer,
   }))
 
