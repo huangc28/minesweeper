@@ -8,4 +8,4 @@ const board = Board(document.getElementById('ms-container'), {
   height: 10,
 }, timer.draw())
 
-$('#ms-container').append(board.render());
+$('#ms-container').append(board.render())
