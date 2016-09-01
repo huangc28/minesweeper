@@ -1,72 +1,66 @@
+'use strict'
 import $ from 'jquery'
 
-function Grid(options) {
-	this._el = null;
-	this.x = null;
-	this.y = null;
-	this._isBomb = false;
-	this._isOpen = false;
-	this._flag = false;
-	this._options = options;
-	_generateDom.call(this);
+const generateDOM = id => {
+	const ele = document.createElement('div')
+	ele.className = 'grid'
+	ele.id = id
+	return ele
+}
 
-		function _generateDom() {
-			var el = document.createElement('div'),
-				_cords = this._options.id.split('-');
-			el.className = 'grid';
-			el.id = this._options.id;
-			this.y = parseInt(_cords[0]);
-			this.x = parseInt(_cords[1]);
-			this._el = el;
-		}
-};
+function grid(id) {
+	const	cords = id.split('-')
+	this.y = parseInt(cords[0])
+	this.x = parseInt(cords[1])
+	this._el = generateDOM(id)
+	this._isBomb = false
+	this._isOpen = false
+	this._flag = false
+}
 
-Grid.prototype.isBomb = function() {
-	return this._isBomb;
-};
+grid.prototype.isBomb = function() {
+	return this._isBomb
+}
 
-Grid.prototype.setBomb = function(bomb) {
-	$(this._el).append("<span class='bomb hidden'></span>");
-	this._isBomb = bomb;
-};
+grid.prototype.setBomb = function(bomb) {
+	$(this._el).append("<span class='bomb hidden'></span>")
+	this._isBomb = bomb
+}
 
-Grid.prototype.reveal = function() {
-	var bombEle = $(this._el).find('.bomb');
-	console.log(bombEle);
-	if(typeof bombEle != 'undefined' || bombEle != '') {
-		$(bombEle).removeClass('hidden');
+grid.prototype.reveal = function() {
+	var bombEle = $(this._el).find('.bomb')
+	if(bombEle || bombEle !== '') {
+		$(bombEle).removeClass('hidden')
 	}
-};
+}
 
-Grid.prototype.setOpen = function(isOpen) {
+grid.prototype.setOpen = function(isOpen) {
 	// reveal hidden bomb
 	if(isOpen) {
-		$(this._el).addClass('save-zone');
+		$(this._el).addClass('save-zone')
 	}
-	this._isOpen = isOpen;
-};
+	this._isOpen = isOpen
+}
 
-Grid.prototype.toggleFlag = function() {
+grid.prototype.toggleFlag = function() {
 	if(this._flag) {
-		$(this._el).removeClass('flag');
-		return this._flag = false;
-
-	} else {
-		$(this._el).addClass('flag');
-		return this._flag = true;
+		$(this._el).removeClass('flag')
+		return this._flag = false
 	}
-};
+	$(this._el).addClass('flag')
+	return this._flag = true
+}
 
-Grid.prototype.isOpen = function() {
-	return this._isOpen;
-};
+grid.prototype.isOpen = function() {
+	return this._isOpen
+}
 
-Grid.prototype.getCoordinate = function() {
-	return {x: this.x, y: this.y}
-};
+grid.prototype.getCoordinate = function() {
+	return { x: this.x, y: this.y }
+}
 
-Grid.prototype.render = function() {
-	return this._el;
-};
+grid.prototype.render = function() {
+	return this._el
+}
 
-export default Grid;
+export default grid

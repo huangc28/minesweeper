@@ -15,7 +15,7 @@ const populate = (boardDOM, width, height) => {
   for(let i = 1; i <= h; i++) {
     boardData[i] = []
     for(let j = 1; j <= w; j++) {
-      boardData[i][j] = new Grid({id: i + '-' + j})
+      boardData[i][j] = new Grid(`${i}-${j}`)
       $(boardDOM).append(boardData[i][j].render())
     }
     $(boardDOM).append("<div class='clear'></div>")
