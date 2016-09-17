@@ -8,18 +8,11 @@ import bombPositions from './utils/bombPositions.js'
 
 let gameStarting = false,
     boardDOM = null,
-	  boardData = [], // contains the grid's dom and its related mines.
-	  bombs = 10
+	  boardData = [] // contains the grid's dom and its related mines.
 
-/**
- * TODO:
- * 	1. Change private member to:
- *		var = _generateBoardDom = function() { ... };
- *  2. Trigger start timer.
- *
- */
 const Board = (initDom, options, timer) => {
-  const { width } = options
+  const { width, bombNum = 10 } = options
+
   // Append Timer
   initDom.appendChild(timer.render())
 	boardDOM = generateBoardDOM()
@@ -29,7 +22,7 @@ const Board = (initDom, options, timer) => {
   // 2. Left click  - flag
   // 3. Click both
   // use "mouse-down" event instead of click.
-  const positionMap = plantMines(bombs, boardData)
+  const positionMap = plantMines(bombNum, boardData)
   bombPositions.save(positionMap)
 
   // bind boardDOM to gameover event
@@ -39,7 +32,7 @@ const Board = (initDom, options, timer) => {
     gameStarting,
     boardData,
     boardDOM,
-    bombs,
+    bombNum,
     timer,
   }))
 
