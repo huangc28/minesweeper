@@ -19,11 +19,11 @@ let gameStarting = false,
  *
  */
 const Board = (initDom, options, timer) => {
-  const { width, height } = options
+  const { width } = options
   // Append Timer
   initDom.appendChild(timer.render())
 	boardDOM = generateBoardDOM()
-  boardData = populate(boardDOM, width, height)
+  boardData = populate(boardDOM, width)
   // Bind click event, determine:
   // 1. Right click - open
   // 2. Left click  - flag

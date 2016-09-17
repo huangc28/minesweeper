@@ -2,19 +2,19 @@ import $ from 'jquery'
 import Grid from '../Grid.js'
 
 /**
+ * The board is always going to be a square.
+ *
  * @param {object} boardDOM
  * @param {number} width
  * @param {number} height
  * @param {func} cb
  */
-const populate = (boardDOM, width, height) => {
-  const w = width
-  const h = height
+const populate = (boardDOM, width = 10) => {
   const boardData = []
 
-  for(let i = 1; i <= h; i++) { // populate horizontally.
+  for(let i = 1; i <= width; i++) { // populate horizontally.
     boardData[i] = []
-    for(let j = 1; j <= w; j++) { // populate vertically.
+    for(let j = 1; j <= width; j++) { // populate vertically.
       boardData[i][j] = new Grid(`${i}-${j}`)
       $(boardDOM).append(boardData[i][j].render())
     }
