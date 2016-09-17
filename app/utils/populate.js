@@ -11,10 +11,10 @@ const populate = (boardDOM, width, height) => {
   const w = width
   const h = height
   const boardData = []
-  // populate horizontally.
-  for(let i = 1; i <= h; i++) {
+
+  for(let i = 1; i <= h; i++) { // populate horizontally.
     boardData[i] = []
-    for(let j = 1; j <= w; j++) {
+    for(let j = 1; j <= w; j++) { // populate vertically.
       boardData[i][j] = new Grid(`${i}-${j}`)
       $(boardDOM).append(boardData[i][j].render())
     }

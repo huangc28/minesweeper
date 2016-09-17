@@ -14,7 +14,7 @@ const click = {
 /**
  * 1. Traverse the 8 direction of the specific location.
  *    	- if 1 of the 8 grids is a bomb, stop traversing, open itself
- *    	- if none them are bombs, keep on traversing to open.
+ *    	- if none of them are bombs, keep on traversing to open.
  * 2. If the game first started
  */
 const catchClickEvt = ({
@@ -27,7 +27,6 @@ const catchClickEvt = ({
 }) => {
   const bombMap = bombPositions.load()
 
-
   if(!gameStarting) {
     gameStarting = true
     timer.trigger('timer:start')
@@ -39,16 +38,16 @@ const catchClickEvt = ({
   	(boardData[cords.y][cords.x].toggleFlag()) ? flag.increase() : flag.reduct()
     // mark bomb position
     if (bombMap.hasOwnProperty(evt.toElement.id)) {
-    	bombMap[evt.toElement.id] = true;
+    	bombMap[evt.toElement.id] = true
     }
   } else if (evt.button === click.left) { // Left click.
   	if(!boardData[cords.y][cords.x].isOpen()) {
-  		boardData[cords.y][cords.x].setOpen(true);
+  		boardData[cords.y][cords.x].setOpen(true)
   		// if click on bomb, then we end the game, reveal all bombs.
   		if(boardData[cords.y][cords.x].isBomb()) {
         // reveal all bombs
         revealBombs(boardData)
-  			$(boardDOM).trigger('gameover', ['lose', timer]);
+  			$(boardDOM).trigger('gameover', ['lose', timer])
   		} else {
   			// add class
   			$(boardData[cords.y][cords.x].render()).addClass('save-zone')

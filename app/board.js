@@ -33,7 +33,7 @@ const Board = (initDom, options, timer) => {
   bombPositions.save(positionMap)
 
   // bind boardDOM to gameover event
-  $(boardDOM).on('gameover', evt => gameoverEvent)
+  $(boardDOM).on('gameover', gameoverEvent)
   $(boardDOM).on('mousedown',  evt => openGridEvent({
     evt,
     gameStarting,

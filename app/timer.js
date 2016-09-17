@@ -11,7 +11,7 @@ function Timer() {
 	return this
 }
 
-var _draw = function() {
+const _draw = function() {
 	var _self = this
 	this._dom = document.createElement('div')
 	this._dom.className = 'ms-timer'
@@ -28,11 +28,11 @@ var _draw = function() {
 	}
 };
 
-var _stopTimer = function(evt, timer) {
+const _stopTimer = function(evt, timer) {
 	clearTimeout(timer._timerInterval)
 }
 
-var _startTimer = function(evt, timer) {
+const _startTimer = function(evt, timer) {
 	console.log('timer start')
 	timer.counter = 0
 	timer._timerInterval = null
@@ -42,7 +42,7 @@ var _startTimer = function(evt, timer) {
 	}, 1000)
 }
 
-var _updateTimer = function(count) {
+const _updateTimer = function(count) {
 	this._counterDom.innerHTML = ''
 	this._counterDom.innerHTML = String(count)
 }

@@ -1,15 +1,17 @@
 const gameoverEvent = (evt, status, timer) => {
-  switch (state) {
+  switch (status) {
     case 'win':
       timer.trigger('timer:stop')
       // this.gameStarting = false;
       timer.unbindAll()
-      alert('you have won the game')
+      alert('you have won the game.')
       break;
+    case 'lose':
     default:
       timer.trigger('timer:stop')
       // this.gameStarting = false;
       timer.unbindAll()
+      alert('you have lost the game.')
   }
 }
 

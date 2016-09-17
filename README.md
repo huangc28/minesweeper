@@ -15,3 +15,5 @@ wrote this minesweepers just for fun and learning purpose.
 [x] es6.
 
 [] when click on mine, pop gameover.
+
+[] try to remove *jquery*.

@@ -1,40 +1,37 @@
 <style>
-.minesweepers-container {
+	.minesweeper-container {
+		text-align: center;
+	}
+	
+	.grid {
+		display: table-cell;
+		border-collapse:collapse;
+		float: left;
+		border: solid 1px;
+		height: 40px;
+		width: 40px;
+		background: #ccc;
+	}
 
-}
-.grid {
-	display: table-cell;
-	border-collapse:collapse;
-	float: left;
-	border: solid 1px;
-	height: 40px;
-	width: 40px;
-	background: #ccc;
-}
+	.save-zone {
+		background: #fff;
+	}
 
-.save-zone {
-	background: #fff;
-}
+	.flag {
+		background: #ccc url('http://therealmofcode.com/games/minesweeper/images/flag.png') center no-repeat !important;
+	}
 
-.flag {
-	background: #ccc url('http://therealmofcode.com/games/minesweeper/images/flag.png') center no-repeat !important;
-}
+	.bomb {
+		background: #fff url('http://therealmofcode.com/games/minesweeper/images/mine.png') no-repeat center !important;
+	}
 
-.flag {
-	background: #ccc url('http://therealmofcode.com/games/minesweeper/images/flag.png') no-repeat center !important;
-}
+	.hidden {
+		display: none;
+	}
 
-.bomb {
-	background: #fff url('http://therealmofcode.com/games/minesweeper/images/mine.png') no-repeat center !important;
-}
-
-.hidden {
-	display: none;
-}
-
-.clear {
-	clear: both;
-}
+	.clear {
+		clear: both;
+	}
 </style>
 
 <html>

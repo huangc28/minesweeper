@@ -6,7 +6,7 @@
 const revealBombs = boardData => {
 	boardData.forEach(row => {
 		row.forEach(grid => {
-			if(grid.isBomb()) grid.reveal()
+			if (grid.isBomb()) grid.reveal()
 		})
 	})
 }

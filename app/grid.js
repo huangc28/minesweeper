@@ -22,15 +22,14 @@ grid.prototype.isBomb = function() {
 	return this._isBomb
 }
 
-grid.prototype.setBomb = function(bomb) {
-	$(this._el).append("<span class='bomb hidden'></span>")
-	this._isBomb = bomb
+grid.prototype.setIsBomb = function(hasBomb) {
+	this._isBomb = hasBomb
 }
 
 grid.prototype.reveal = function() {
-	var bombEle = $(this._el).find('.bomb')
-	if(bombEle || bombEle !== '') {
-		$(bombEle).removeClass('hidden')
+	const bombEle = $(this._el)
+	if(bombEle) {
+		$(bombEle).addClass('bomb')
 	}
 }
 

@@ -21,7 +21,6 @@ const win = bombs => {
  * @param {object} boardData
  */
 const traverseToOpen = (grid, boardData, boardDOM, bombs) => {
-  console.log('traverse to open', bombPositions.load())
   const { y, x } = grid.getCoordinate()
 	const bombsInfo = []
   const targetCords = {}
